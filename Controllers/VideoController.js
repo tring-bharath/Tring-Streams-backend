@@ -1,6 +1,4 @@
 const {videoModel,HistoryModel,AllModel} = require("../Schema/VideoSchema");
-// const HistoryModel = require("../Schema/VideoSchema");
-// const AllModel = require("../Schema/VideoSchema");
 
 const insertVideo = async (req, res) => {
   try {
