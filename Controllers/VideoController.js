@@ -85,16 +85,7 @@ const insertManyVideos = async (req, res) => {
   }
 };
 
-const getAllVideos = async (req, res) => {
-  const page = req.query.page;
-  const skip = (page - 1) * 20;
-  try {
-    const savedVideo = await AllModel.find().skip(skip).limit(20);
-    res.status(200).send(savedVideo);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-};
+
 
 const updateViews = async (req, res) => {
   const id = parseInt(req.params.videoId);
@@ -106,9 +97,20 @@ const updateViews = async (req, res) => {
   }
 };
 
+const getAllVideos = async (req, res) => {
+  const page = req.query.page;
+  const skip = (page - 1) * 20;
+  try {
+    const savedVideo = await AllModel.find({},{id:1,tags:1,thumbnail:1,views:1,likes:1}).skip(skip).limit(20);
+    res.status(200).send(savedVideo);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
 const getCarousel = async (req, res) => {
   try {
-    const video = await AllModel.find().sort({ views: -1 }).limit(10);
+    const video = await AllModel.find({},{id:1,tags:1,thumbnail:1,views:1,likes:1}).sort({ views: -1 }).limit(10);
     
     res.status(200).send(video);
   } catch (err) {
@@ -121,13 +123,26 @@ const getCarousel = async (req, res) => {
 const searchVideos = async (req, res) => {
   try {
     const { tag } = req.query;
-    const videos = await AllModel.find({ tags: { $regex: new RegExp(tag, "i") } });
+    const videos = await AllModel.find({ tags: { $regex: new RegExp(tag, "i") } },{id:1,tags:1,thumbnail:1,views:1,likes:1});
     res.json(videos);
   } catch (err) {
     res.status(500).json({ error: "Server Error" });
   }
 };
 
+const videoPreview=async (req,res)=>
+{
+  try{
+    const id=req.params.id;
+    const video=await AllModel.findOne({id},{videoURL:1,_id:0});
+    res.status(201).send(video);
+  }
+  catch(err)
+  {
+    
+    res.status(400).send(err);
+  }
+}
 module.exports = {
   insertVideo,
   insertHistory,
@@ -140,4 +155,5 @@ module.exports = {
   updateViews,
   getCarousel,
   searchVideos,
+  videoPreview
 };
