@@ -6,7 +6,6 @@ const app = express();
 const connectDB = require("./Config/db");
 const userRoutes = require("./Routes/UserRoute");
 const videoRoutes = require("./Routes/VideoRoute");
-
 app.use(express.json());
 app.use(cors({origin:['http://localhost:5173']}));
 
